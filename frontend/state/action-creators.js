@@ -13,12 +13,12 @@ export function moveCounterClockwise() {
   return {type: types.MOVE_COUNTERCLOCKWISE};
  }
 
-export function selectAnswer() {
-  return {type: types.SET_SELECTED_ANSWER};
+export function selectAnswer(answerId) {
+  return {type: types.SET_SELECTED_ANSWER, payload: answerId};
  }
   
-export function setMessage() {
-  return {type: types.SET_INFO_MESSAGE};
+export function setMessage(message) {
+  return {type: types.SET_INFO_MESSAGE, payload: message};
  }
 
 export function setQuiz(quiz) {
@@ -50,18 +50,21 @@ export function fetchQuiz() {
     })
   }
 }
-export function postAnswer() {
+export function postAnswer(quizId, answerId) {
+  const payload = {
+    quiz_id: quizId,
+    answer_id: answerId
+  }
   return function (dispatch) {
     // On successful POST:
     // - Dispatch an action to reset the selected answer state
     // - Dispatch an action to set the server message to state
     // - Dispatch the fetching of the next quiz
-    axios.post(`http://localhost:9000/api/quiz/answer`)
+    axios.post(`http://localhost:9000/api/quiz/answer`, payload)
     .then((resp) => {
-      console.log("post answer resp", resp)
       dispatch(selectAnswer(null))
       dispatch(setMessage(resp.data.message))
-      dispatch(setQuiz())
+      dispatch(fetchQuiz())
     })
     .catch((err) => {
       console.error(err);

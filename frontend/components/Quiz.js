@@ -3,21 +3,19 @@ import { connect } from 'react-redux';
 
 import { fetchQuiz, selectAnswer, postAnswer} from '../state/action-creators';
 
+
 function Quiz(props) {
-  const { selectAnswer, selectedAnswer, quiz, infoMessage, fetchQuiz } = props;
+  const { selectAnswer, fetchQuiz, postAnswer, selectedAnswer, quiz, infoMessage} = props;
 
   useEffect(() => {
-    fetchQuiz();
-  }, [])
+    if (!quiz) {
+      fetchQuiz();
+  }}, [])
 
   const handleAnswerClick = (answerId) => {
-    if (selectedAnswer === answerId) {
-      selectAnswer(answerId);
-    } else {
-      selectAnswer(null);
-    }
+   selectAnswer(answerId);
   }
-
+  
   return (
     <div id="wrapper">
       {
@@ -25,26 +23,14 @@ function Quiz(props) {
         quiz ? (
           <>
             <h2>{quiz.question}</h2>
-
+          
             <div id="quizAnswers">
-              {/* <div className="answer selected">
-                A function
-                <button>
-                  SELECTED
-                </button>
-              </div>
-
-              <div className="answer">
-                An elephant
-                <button>
-                  Select
-                </button>
-              </div> */}
               {quiz.answers.map((answer) => (
                 <div 
                   key={answer.answer_id}
                   className={`answer ${selectedAnswer === answer.answer_id ? 'selected' : ''}`}
-                  onClick={() => {handleAnswerClick}}
+                  //if the answer currently selected is the same as answer_id, clear the selection, if not set selected answer into state
+                  onClick={() => handleAnswerClick(answer.answer_id)}
                 >
                 {answer.text}
                 {selectedAnswer === answer.answer_id ? (
@@ -57,7 +43,17 @@ function Quiz(props) {
               ))}
             </div>
 
-            <button id="submitAnswerBtn">Submit answer</button>
+            <button 
+              id="submitAnswerBtn" 
+              disabled={!selectedAnswer}
+              onClick={() => {
+                if (selectedAnswer) {
+                postAnswer(quiz.quiz_id, selectedAnswer)
+                }
+              }}
+            >
+              Submit answer
+            </button>
           </>
         ) : 'Loading next quiz...'
       }
