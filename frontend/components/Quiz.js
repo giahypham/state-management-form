@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux';
 
-import { fetchQuiz, selectAnswer, postAnswer} from '../state/action-creators';
+import { fetchQuiz, selectAnswer, postAnswer } from '../state/action-creators';
 
 
 function Quiz(props) {
-  const { selectAnswer, fetchQuiz, postAnswer, selectedAnswer, quiz, infoMessage} = props;
+  const { fetchQuiz, selectAnswer, postAnswer, selectedAnswer, quiz} = props;
 
   useEffect(() => {
     if (!quiz) {
@@ -65,7 +65,6 @@ const mapStateToProps = (state) => {
   return {
     quiz: state.quiz,
     selectedAnswer: state.selectedAnswer,
-    infoMessage: state.infoMessage
   }
 }
 
